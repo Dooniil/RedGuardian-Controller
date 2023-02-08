@@ -1,8 +1,8 @@
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 
-DATABASE_URL = "postgresql+asyncpg://rg_user:Password12-@localhost:5432/RedGuardian"
-Base = declarative_base()
+from db.config import DATABASE_URL
+from db.config import Base
 
 
 class AsyncDatabaseSession:
@@ -16,6 +16,10 @@ class AsyncDatabaseSession:
     async def init(self):
         self._engine = create_async_engine(DATABASE_URL, echo=True)
         self._session = sessionmaker(self._engine, expire_on_commit=False, class_=AsyncSession)()
+
+    async def create_all(self):
+        async with self._engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
 
 
 async_db_session = AsyncDatabaseSession()

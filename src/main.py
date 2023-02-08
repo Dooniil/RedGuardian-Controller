@@ -12,11 +12,11 @@ async def create_family():
 
 async def init_app():
     await async_db_session.init()
+    # await async_db_session.create_all()
 
 
 async def async_main():
     await init_app()
-    await create_family()
 
 if __name__ == '__main__':
     asyncio.run(async_main())
