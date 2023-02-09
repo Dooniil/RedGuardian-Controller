@@ -1,5 +1,6 @@
-from db.models import Family, Platform, Vulnerability
+from db.models.vulnerability_models import Family, Platform, Vulnerability
 import json
+
 
 async def init_family():
     await Family.create(name='Windows')

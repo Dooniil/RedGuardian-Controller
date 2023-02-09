@@ -1,7 +1,7 @@
 import asyncio
-
 from db.database import async_db_session
-from db.models import Family, Platform, Vulnerability
+
+from db.models.vulnerability_models import Family, Platform, Vulnerability
 
 
 async def create_family():
