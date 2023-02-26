@@ -1,4 +1,4 @@
-from src.server import ThreadedTCPServer, ControllerTCPHandler, CONTROLLER_HOST, CONTROLLER_PORT
+from src.startup_loading import initial
 
 
 # async def create_family():
@@ -17,5 +17,4 @@ async def async_main():
     pass
 
 if __name__ == '__main__':
-    with ThreadedTCPServer((CONTROLLER_HOST, int(CONTROLLER_PORT)), ControllerTCPHandler) as server:
-        server.serve_forever()
+    initial()
