@@ -1,10 +1,9 @@
 from sqlalchemy.orm import declarative_base
+from src.config_loading import initial
+import os
 
-from src.startup_loading import addresses, initial
+db_info: dict = initial(os.sep.join([os.getcwd(), 'db_config.cfg']))
 
-if not addresses:
-    initial()
-
-DATABASE_URL = f"postgresql+asyncpg://{addresses.get('db_user')}:{addresses.get('db_pass')}@{addresses.get('db_host')}" \
-               f":{addresses.get('db_port')}/{addresses.get('db_name')}"
+DATABASE_URL = f"postgresql+asyncpg://{db_info.get('db_user')}:{db_info.get('db_pass')}@{db_info.get('db_host')}" \
+               f":{db_info.get('db_port')}/{db_info.get('db_name')}"
 Base = declarative_base()

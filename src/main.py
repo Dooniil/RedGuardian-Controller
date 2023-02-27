@@ -1,20 +1,17 @@
-from src.startup_loading import initial
-
-
-# async def create_family():
-#     await Family.create(name='Windows')
-#     family = await Family.get(1)
-#     return family.id
-
-
-# async def init_app():
-    # await async_db_session.init()
-    # await async_db_session.create_all()
+from src.config_loading import initial
+from src.server import run_server
+import asyncio
+import os
 
 
 async def async_main():
-    # await init_app()
-    pass
+    controller_port: int = initial(os.sep.join([os.getcwd(), 'controller_config.cfg'])).get('controller_port')
+
+    tasks = [run_server(controller_port)]
+    await asyncio.gather(*tasks)
+
 
 if __name__ == '__main__':
-    initial()
+    loop = asyncio.new_event_loop()
+    loop.run_until_complete(async_main())
+
