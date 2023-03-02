@@ -1,17 +1,25 @@
-from src.config_loading import initial
-from src.server import run_server
+from src.read_config import read_file
+from db.database import async_db_session
 import asyncio
 import os
 
 
-async def async_main():
-    controller_port: int = initial(os.sep.join([os.getcwd(), 'controller_config.cfg'])).get('controller_port')
+config_data = dict()
 
-    tasks = [run_server(controller_port)]
-    await asyncio.gather(*tasks)
+
+async def async_main() -> None:
+    tasks_read_configs: list[asyncio.Task] = [
+        asyncio.create_task(read_file(f'{os.sep.join([os.getcwd(), "controller_config.cfg"])}')),
+        asyncio.create_task(read_file(f'{os.sep.join([os.getcwd(), "rest_config.cfg"])}')),
+        asyncio.create_task(read_file(f'{os.sep.join([os.getcwd(), "db_config.cfg"])}'))
+    ]
+
+    for item in await asyncio.gather(*tasks_read_configs):
+        config_data.update(item)
+
+    await async_db_session.init(config_data)
 
 
 if __name__ == '__main__':
-    loop = asyncio.new_event_loop()
-    loop.run_until_complete(async_main())
+    asyncio.run(async_main())
 
