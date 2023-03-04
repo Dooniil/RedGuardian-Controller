@@ -1,5 +1,6 @@
 from src.read_config import read_file
-from db.database import async_db_session
+# from db.database import async_db_session
+from src.server import run_server
 import asyncio
 import os
 
@@ -17,7 +18,8 @@ async def async_main() -> None:
     for item in await asyncio.gather(*tasks_read_configs):
         config_data.update(item)
 
-    await async_db_session.init(config_data)
+    # await async_db_session.init(config_data)
+    await run_server(config_data['controller_port'], config_data['rest_ip'], config_data['rest_port'])
 
 
 if __name__ == '__main__':
