@@ -1,6 +1,8 @@
 from src.read_config import read_file
 # from db.database import async_db_session
+from src.services.active_conn import active_conn
 from src.server import run_server
+from src.services.scanner_service import periodic_check_conn
 import asyncio
 import os
 
@@ -19,7 +21,8 @@ async def async_main() -> None:
         config_data.update(item)
 
     # await async_db_session.init(config_data)
-    await run_server(config_data['controller_port'], config_data['rest_ip'], config_data['rest_port'])
+    periodic_checking_task = asyncio.create_task(periodic_check_conn(active_conn))
+    await asyncio.gather(run_server(config_data['controller_port'], active_conn), periodic_checking_task)
 
 
 if __name__ == '__main__':
